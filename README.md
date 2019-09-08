@@ -16,7 +16,7 @@ GitHub Pages: [https://github.com/fengshangbin/WaterFall](https://github.com/fen
 
 ### 在线测试
 
-[http://lazypage-switch.fengshangbin.com/](https://www.fengshangbin.com/html/waterfall/)
+[https://www.fengshangbin.com/html/waterfall/](https://www.fengshangbin.com/html/waterfall/)
 
 # 如何使用
 
