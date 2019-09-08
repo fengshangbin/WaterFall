@@ -72,6 +72,7 @@ waterFall.addEventListener("touchbottom", function(e) {})
 
 ```
 waterFall.showLoading(true); //参数位true时 显示顶部loading，否则显示底部loading
+waterFall.hideLoading();
 ```
 
 ### 6, 更新视图
