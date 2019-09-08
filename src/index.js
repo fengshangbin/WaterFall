@@ -8,7 +8,9 @@ var _config = {
   gap: null,
   minGap: null,
   itemSelector: null,
-  scrollParent: window
+  scrollParent: window,
+  loading:
+    '<div class="water-fall-loading"><svg viewBox="0 0 50 50" class="loading"><defs><linearGradient id="linear" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#000" stop-opacity="1.0" /><stop offset="90%" stop-color="#000" stop-opacity="0" /></linearGradient></defs><circle cx="25" cy="25" r="20" stroke-width="5" stroke="url(#linear)" fill="none" /></svg><div>'
 };
 //宽度单位支持 px % rem em
 /* 
@@ -83,12 +85,13 @@ export function builder(container, options) {
     var arr = [];
     for (var i = 0; i < columns; i++) {
       arr.push({
-        top: 0,
+        top: topSpace,
         col: i
       });
     }
     for (var i = 0; i < childrens.length; i++) {
       var item = childrens[i];
+      if (item == topLoading || item == bottomLoading) continue;
       arr.sort(function(a, b) {
         if (a.top > b.top) return 1;
         else if (a.top < b.top) return -1;
@@ -105,6 +108,13 @@ export function builder(container, options) {
         container.style.height = arr[0].top + "px";
     }
 
+    if (bottomLoading) {
+      container.style.height =
+        parseFloat(container.style.height.replace(/px$/i, "")) +
+        bottomLoading.offsetHeight +
+        "px";
+    }
+
     var afterWidth = container.innerWidth || container.clientWidth;
     if (afterWidth != contaierWidth) this.update();
 
@@ -113,22 +123,97 @@ export function builder(container, options) {
     }
   };
 
+  var topLoading, bottomLoading;
+  var topSpace = 0;
+  this.showLoading = function(toucheTop) {
+    //this.hideLoading();
+    if (toucheTop) {
+      container.insertAdjacentHTML("afterbegin", config.loading);
+      topLoading = container.firstChild || container.firstElementChild;
+      topSpace = topLoading.offsetHeight;
+      this.update();
+      scrollUp(topSpace);
+    } else {
+      container.insertAdjacentHTML("beforeend", config.loading);
+      bottomLoading = container.lastChild || container.lastElementChild;
+      bottomLoading.classList.add("bottom");
+      container.style.height =
+        parseFloat(container.style.height.replace(/px$/i, "")) +
+        bottomLoading.offsetHeight +
+        "px";
+      scrollDown(bottomLoading.offsetHeight);
+    }
+  };
+  this.hideLoading = function() {
+    if (topLoading) {
+      topLoading.remove();
+      topLoading = null;
+      topSpace = 0;
+      this.update();
+    }
+    if (bottomLoading) bottomLoading.remove();
+    bottomLoading = null;
+  };
+
+  function scrollUp(y) {
+    scrollParent.scrollTo(
+      0,
+      (scrollParent == window
+        ? document.documentElement.scrollTop || document.body.scrollTop
+        : scrollParent.scrollTop) - y
+    );
+  }
+  function scrollDown(y) {
+    scrollParent.scrollTo(
+      0,
+      (scrollParent == window
+        ? document.documentElement.scrollTop || document.body.scrollTop
+        : scrollParent.scrollTop) + y
+    );
+  }
+
   var debounceResize = debounce(() => {
     this.update();
+    lastScrollY =
+      scrollParent == window
+        ? document.documentElement.scrollTop || document.body.scrollTop
+        : scrollParent.scrollTop;
   }, 100);
 
   window.addEventListener("resize", () => {
     debounceResize();
   });
 
+  var lastScrollY = 0;
   var debounceScorll = debounce(() => {
-    //console.log("debounce", new Date().getTime());
+    var scrollParentHeight =
+      scrollParent.innerHeight || scrollParent.clientHeight;
+    var scrollY =
+      scrollParent == window
+        ? document.documentElement.scrollTop || document.body.scrollTop
+        : scrollParent.scrollTop;
+    var scrollContentHeight =
+      scrollParent == window
+        ? document.documentElement.scrollHeight || document.body.scrollHeight
+        : scrollParent.scrollHeight;
+    if (scrollY == 0 && lastScrollY > scrollY && topLoading == null) {
+      this.dispatchEvent(new C3Event("touchtop"));
+    }
+    if (
+      scrollY + scrollParentHeight + 1 >= scrollContentHeight &&
+      lastScrollY < scrollY &&
+      bottomLoading == null
+    ) {
+      this.dispatchEvent(new C3Event("touchbottom"));
+    }
+    lastScrollY = scrollY;
   }, 100);
 
   scrollParent.addEventListener("scroll", () => {
     debounceScorll();
   });
   this.update();
+  return this;
 }
 (function() {
   var Super = function() {};

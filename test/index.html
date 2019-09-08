@@ -5,46 +5,59 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>waterfall test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> -->
     <style>
-      /* html,
-      body {
-        margin: 0;
-        padding: 0;
-      } */
-      #container div {
+      #container .water-fall-item {
         border: 1px solid #f00;
       }
     </style>
   </head>
   <body>
-    <div id="container">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
+    <div id="container"></div>
     <script src="../dist/waterfall.js"></script>
     <script>
       var txt =
         "因遭受该男子暴打，吴巨轮面部有血迹，头部出现明显不适，随后被送往医院进行医疗。据接诊的湖南航天医院急诊科主任黄扩军介绍，吴巨轮头部软组织损伤，有脑震荡体现，需住院观察医治。横遭此祸，吴巨轮感觉很冤枉，因为按照有关规定，他实在不能在同一个站点进行二次停泊。387路公交所属的长沙众旺有限责任公司运营科科长戴勇表示，按照行业规章，在同一个站点进行二次停泊或站外停靠都是违纪行为，因为这样会影响其他公交车进出站和一般车辆的通畅。针对年轻男子的打人行为，该公司选择了报警。20日，岳麓公安分局公布通知称，11月18日上午，一男子在搭乘387路公交时，因不满司机的服务态度，置车上乘客的性命于不顾，在车辆行进过程中暴打公交司机吴某，随后逃离现场。接到报警后，岳麓公安分局观沙岭派出所迅速展开初步调查，于11月20日8时将肇事男子夏某智归案。潇湘晨报记者了解到，夏某智是长沙本地人，也是公共交通行业的工作者，是一名的士司机。夏某智在警局内接受媒体采访时称，“我们上车看到司机的表情很不情愿，那个年纪大的乘客一直在跟他吵，司机说话也不好听”，“现在特别后悔，确实是自己太冲动了，没事找事似的”。现在夏某智涉案以危险方法危害公共安全犯罪被刑事拘留，案件还在进一步处理中。";
-      document.querySelectorAll("#container div").forEach(function(item) {
-        item.innerHTML = getTxt();
-      });
       function getTxt() {
         var len = Math.floor(Math.random() * txt.length);
         var start = Math.floor(Math.random() * (txt.length - len));
         return txt.substr(start, len);
       }
+      var pageSize = 16;
+      function initContent() {
+        var container = document.getElementById("container");
+        container.innerHTML = "";
+        addPageContent();
+      }
+      function addPageContent() {
+        for (var i = 0; i < pageSize; i++) {
+          container.insertAdjacentHTML("beforeend", "<div></div>");
+          var item = container.lastChild || container.lastElementChild;
+          item.innerHTML = getTxt();
+        }
+      }
+      initContent();
+
       var waterFall = WaterFall.builder(document.getElementById("container"), {
         minWidth: "300px",
         gap: "10px"
+      });
+      waterFall.addEventListener("touchtop", function(e) {
+        console.log("touchtop", e);
+        waterFall.showLoading(true);
+        setTimeout(function() {
+          waterFall.hideLoading();
+          initContent();
+          waterFall.update();
+        }, 1000);
+      });
+      waterFall.addEventListener("touchbottom", function(e) {
+        console.log("touchbottom", e);
+        waterFall.showLoading();
+        setTimeout(function() {
+          waterFall.hideLoading();
+          addPageContent();
+          waterFall.update();
+        }, 1000);
       });
     </script>
   </body>
