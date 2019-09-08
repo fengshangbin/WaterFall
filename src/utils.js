@@ -17,7 +17,8 @@ export function C3EventDispatcher() {
   var event = {};
   this.addEventListener = function(eventType, callback) {
     if (event[eventType] == null) event[eventType] = [];
-    if (event[eventType].indexOf(callback) == -1) event[eventType].push(callback);
+    if (event[eventType].indexOf(callback) == -1)
+      event[eventType].push(callback);
   };
   this.removeEventListener = function(eventType, callback) {
     if (event[eventType] == null) event[eventType] = [];
@@ -43,15 +44,15 @@ export function C3EventDispatcher() {
     return event[eventType].length > 0;
   };
 }
-
+//防抖
 export function debounce(fn, wait) {
   var timer;
   return function(...args) {
     if (!timer) {
-      timer = 'immediate';
+      timer = "immediate";
       fn.apply(this, args);
     } else {
-      if (timer != 'immediate') clearTimeout(timer);
+      if (timer != "immediate") clearTimeout(timer);
       timer = setTimeout(() => {
         timer = null;
         fn.apply(this, args);
@@ -59,7 +60,7 @@ export function debounce(fn, wait) {
     }
   };
 }
-
+//节流
 export function throttle(fn, wait) {
   var timer;
   return function(...args) {
