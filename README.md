@@ -11,7 +11,8 @@ GitHub Pages: [https://github.com/fengshangbin/WaterFall](https://github.com/fen
 
 原生脚本，不依赖第三方框架  
 多种排版模式，支持各种实际排版需求  
-支持上拉刷新，下拉到底时追加下一页视图  
+兼容 px em rem %多种宽度单位  
+支持下拉到底时追加下一页视图  
 使用简单
 
 ### 在线测试
@@ -52,36 +53,54 @@ options 配置参数
 
 ### 3, 三种排版模式
 
-1, {minWidth:"300px", gap:"10px"}  
-指定子项最小宽度
-
-2, {columns:3, gap:"10px"}  
-指定子项列数
-
-3, {width:"300px", minGap:"10px"}  
-指定子项宽度，和最小间距
-
-### 4, 监听滑动到顶或到底事件
+1, 指定子项最小宽度
 
 ```
-waterFall.addEventListener("touchtop", function(e) {})
+{minWidth:"300px", gap:"10px"}
+```
+
+2, 指定子项列数
+
+```
+{columns:3, gap:"10px"}
+```
+
+3, 指定子项宽度，和最小间距
+
+```
+{width:"300px", minGap:"10px"}
+```
+
+### 4， 兼容 px em rem %多种宽度单位
+
+```
+{width:"300px", minGap:"10em"}
+```
+
+```
+{width:"300rem", minGap:"1%"}
+```
+
+### 5, 监听滑动到底事件
+
+```
 waterFall.addEventListener("touchbottom", function(e) {})
 ```
 
-### 5, 显示隐藏 loading
+### 6, 显示隐藏 loading
 
 ```
 waterFall.showLoading(true); //参数位true时 显示顶部loading，否则显示底部loading
 waterFall.hideLoading();
 ```
 
-### 6, 更新视图
+### 7, 更新视图
 
 ```
 waterFall.update();
 ```
 
-### 7, 使用示例
+### 8, 使用示例
 
 ```
 <!DOCTYPE html>
@@ -126,14 +145,6 @@ waterFall.update();
       var waterFall = WaterFall.builder(document.getElementById("container"), {
         minWidth: "300px",
         gap: "10px"
-      });
-      waterFall.addEventListener("touchtop", function(e) {
-        waterFall.showLoading(true);
-        setTimeout(function() {
-          waterFall.hideLoading();
-          initContent();
-          waterFall.update();
-        }, 1000);
       });
       waterFall.addEventListener("touchbottom", function(e) {
         waterFall.showLoading();

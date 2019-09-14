@@ -42,22 +42,13 @@
         minWidth: "300px",
         gap: "10px"
       });
-      waterFall.addEventListener("touchtop", function(e) {
-        console.log("touchtop", e);
-        waterFall.showLoading(true);
-        setTimeout(function() {
-          waterFall.hideLoading();
-          initContent();
-          waterFall.update();
-        }, 1000);
-      });
       waterFall.addEventListener("touchbottom", function(e) {
         console.log("touchbottom", e);
         waterFall.showLoading();
         setTimeout(function() {
-          waterFall.hideLoading();
           addPageContent();
           waterFall.update();
+          waterFall.hideLoading();
         }, 1000);
       });
     </script>

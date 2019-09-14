@@ -89,6 +89,7 @@ export function builder(container, options) {
         col: i
       });
     }
+    maxHeight = 0;
     for (var i = 0; i < childrens.length; i++) {
       var item = childrens[i];
       if (item == topLoading || item == bottomLoading) continue;
@@ -104,16 +105,11 @@ export function builder(container, options) {
       item.style.left = left + "px";
       item.style.top = top + "px";
       arr[0].top += item.offsetHeight + vGap;
-      if (arr[0].top >= arr[columns - 1].top)
-        container.style.height = arr[0].top + "px";
+      if (arr[0].top >= arr[columns - 1].top) {
+        maxHeight = arr[0].top;
+      }
     }
-
-    if (bottomLoading) {
-      container.style.height =
-        parseFloat(container.style.height.replace(/px$/i, "")) +
-        bottomLoading.offsetHeight +
-        "px";
-    }
+    setContainerHeight();
 
     var afterWidth = container.innerWidth || container.clientWidth;
     if (afterWidth != contaierWidth) this.update();
@@ -124,7 +120,9 @@ export function builder(container, options) {
   };
 
   var topLoading, bottomLoading;
-  var topSpace = 0;
+  var topSpace = 0,
+    bottomSpace = 0,
+    maxHeight = 0;
   this.showLoading = function(toucheTop) {
     //this.hideLoading();
     if (toucheTop) {
@@ -137,11 +135,9 @@ export function builder(container, options) {
       container.insertAdjacentHTML("beforeend", config.loading);
       bottomLoading = container.lastChild || container.lastElementChild;
       bottomLoading.classList.add("bottom");
-      container.style.height =
-        parseFloat(container.style.height.replace(/px$/i, "")) +
-        bottomLoading.offsetHeight +
-        "px";
-      scrollDown(bottomLoading.offsetHeight);
+      bottomSpace = bottomLoading.offsetHeight;
+      setContainerHeight();
+      scrollDown(bottomSpace);
     }
   };
   this.hideLoading = function() {
@@ -151,9 +147,17 @@ export function builder(container, options) {
       topSpace = 0;
       this.update();
     }
-    if (bottomLoading) bottomLoading.remove();
-    bottomLoading = null;
+    if (bottomLoading) {
+      bottomLoading.remove();
+      bottomLoading = null;
+      bottomSpace = 0;
+      setContainerHeight();
+    }
   };
+
+  function setContainerHeight() {
+    container.style.height = maxHeight + bottomSpace + "px";
+  }
 
   function scrollUp(y) {
     scrollParent.scrollTo(
