@@ -149,9 +149,9 @@ waterFall.update();
       waterFall.addEventListener("touchbottom", function(e) {
         waterFall.showLoading();
         setTimeout(function() {
-          waterFall.hideLoading();
           addPageContent();
           waterFall.update();
+          waterFall.hideLoading();
         }, 1000);
       });
     </script>
