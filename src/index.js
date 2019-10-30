@@ -129,8 +129,6 @@ export function builder(container, options) {
     var afterWidth = container.innerWidth || container.clientWidth;
     if (afterWidth != contaierWidth) {
       this.update();
-    } else {
-      window.setTimeout(debounceScorll, 10);
     }
   };
 
@@ -208,6 +206,9 @@ export function builder(container, options) {
   }, 10);
 
   scrollParent.addEventListener('scroll', debounceScorll);
+  this.fireScroll = function() {
+    debounceScorll();
+  };
   this.update();
   return this;
 }
