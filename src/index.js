@@ -1,5 +1,5 @@
-import "./waterfall.less";
-import { extend, C3Event, C3EventDispatcher, debounce } from "./utils";
+import './waterfall.less';
+import { extend, C3Event, C3EventDispatcher, debounce } from './utils';
 
 var _config = {
   minWidth: null,
@@ -9,8 +9,7 @@ var _config = {
   minGap: null,
   itemSelector: null,
   scrollParent: window,
-  loading:
-    '<div class="water-fall-loading"><svg viewBox="0 0 50 50" class="loading"><defs><linearGradient id="linear" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#000" stop-opacity="1.0" /><stop offset="90%" stop-color="#000" stop-opacity="0" /></linearGradient></defs><circle cx="25" cy="25" r="20" stroke-width="5" stroke="url(#linear)" fill="none" /></svg><div>'
+  loading: '<div class="water-fall-loading"><svg viewBox="0 0 50 50" class="loading"><defs><linearGradient id="linear" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#000" stop-opacity="1.0" /><stop offset="90%" stop-color="#000" stop-opacity="0" /></linearGradient></defs><circle cx="25" cy="25" r="20" stroke-width="5" stroke="url(#linear)" fill="none" /></svg><div>'
 };
 //宽度单位支持 px % rem em
 /* 
@@ -24,7 +23,7 @@ export function builder(container, options) {
   var config = extend(_config, options);
   var scrollParent = config.scrollParent;
   if (container != document.body) {
-    container.classList.add("water-fall-container");
+    container.classList.add('water-fall-container');
   }
   function getPixel(value, contaierWidth, rootFontSize, contaierFontSize) {
     if (value == null) return 0;
@@ -47,18 +46,10 @@ export function builder(container, options) {
     return parseFloat(value) == NaN ? 0 : parseFloat(value);
   }
 
-  this.update = function() {
+  this.measure = function() {
     var contaierWidth = container.innerWidth || container.clientWidth;
-    var rootFontSize = getComputedStyle(document.documentElement)[
-      "font-size"
-    ].replace(/px$/i, "");
-    var contaierFontSize = getComputedStyle(container)["font-size"].replace(
-      /px$/i,
-      ""
-    );
-    var childrens = config.itemSelector
-      ? container.querySelectorAll(config.itemSelector)
-      : container.children;
+    var rootFontSize = getComputedStyle(document.documentElement)['font-size'].replace(/px$/i, '');
+    var contaierFontSize = getComputedStyle(container)['font-size'].replace(/px$/i, '');
     var columns = 0;
     var gap = 0;
     var vGap = 0;
@@ -71,9 +62,7 @@ export function builder(container, options) {
     } else if (config.minWidth != null) {
       gap = getLocalPixel(config.gap);
       vGap = gap;
-      columns = Math.floor(
-        (contaierWidth + gap) / (getLocalPixel(config.minWidth) + gap)
-      );
+      columns = Math.floor((contaierWidth + gap) / (getLocalPixel(config.minWidth) + gap));
       itemWidth = (contaierWidth - gap * (columns - 1)) / columns;
     } else if (config.width != null) {
       itemWidth = getLocalPixel(config.width);
@@ -82,7 +71,29 @@ export function builder(container, options) {
       columns = Math.floor((contaierWidth + minGap) / (itemWidth + minGap));
       gap = (contaierWidth - itemWidth * columns) / (columns - 1);
     }
+    function getLocalPixel(value) {
+      return getPixel(value, contaierWidth, rootFontSize, contaierFontSize);
+    }
+    return {
+      contaierWidth: contaierWidth,
+      columns: columns,
+      itemWidth: itemWidth,
+      gap: gap,
+      vGap: vGap
+    };
+  };
+
+  this.update = function() {
+    var measureResult = this.measure();
+    var contaierWidth = measureResult.contaierWidth;
+    var columns = measureResult.columns;
+    var itemWidth = measureResult.itemWidth;
+    var gap = measureResult.gap;
+    var vGap = measureResult.vGap;
+    var childrens = config.itemSelector ? container.querySelectorAll(config.itemSelector) : container.children;
+
     var arr = [];
+    if (columns == 0) return;
     for (var i = 0; i < columns; i++) {
       arr.push({
         top: topSpace,
@@ -96,14 +107,18 @@ export function builder(container, options) {
       arr.sort(function(a, b) {
         if (a.top > b.top) return 1;
         else if (a.top < b.top) return -1;
-        else return 0;
+        else {
+          if (a.col > b.col) return 1;
+          else if (a.col < b.col) return -1;
+          else return 0;
+        }
       });
       var left = arr[0].col == 0 ? 0 : arr[0].col * (itemWidth + gap);
       var top = arr[0].top;
-      item.classList.add("water-fall-item");
-      item.style.width = itemWidth + "px";
-      item.style.left = left + "px";
-      item.style.top = top + "px";
+      item.classList.add('water-fall-item');
+      item.style.width = itemWidth + 'px';
+      item.style.left = left + 'px';
+      item.style.top = top + 'px';
       arr[0].top += item.offsetHeight + vGap;
       if (arr[0].top >= arr[columns - 1].top) {
         maxHeight = arr[0].top;
@@ -112,10 +127,10 @@ export function builder(container, options) {
     setContainerHeight();
 
     var afterWidth = container.innerWidth || container.clientWidth;
-    if (afterWidth != contaierWidth) this.update();
-
-    function getLocalPixel(value) {
-      return getPixel(value, contaierWidth, rootFontSize, contaierFontSize);
+    if (afterWidth != contaierWidth) {
+      this.update();
+    } else {
+      window.setTimeout(debounceScorll, 10);
     }
   };
 
@@ -126,15 +141,15 @@ export function builder(container, options) {
   this.showLoading = function(toucheTop) {
     //this.hideLoading();
     if (toucheTop) {
-      container.insertAdjacentHTML("afterbegin", config.loading);
+      container.insertAdjacentHTML('afterbegin', config.loading);
       topLoading = container.firstChild || container.firstElementChild;
       topSpace = topLoading.offsetHeight;
       this.update();
       scrollUp(topSpace);
     } else {
-      container.insertAdjacentHTML("beforeend", config.loading);
+      container.insertAdjacentHTML('beforeend', config.loading);
       bottomLoading = container.lastChild || container.lastElementChild;
-      bottomLoading.classList.add("bottom");
+      bottomLoading.classList.add('bottom');
       bottomSpace = bottomLoading.offsetHeight;
       setContainerHeight();
       scrollDown(bottomSpace);
@@ -156,69 +171,47 @@ export function builder(container, options) {
   };
 
   function setContainerHeight() {
-    container.style.height = maxHeight + bottomSpace + "px";
+    container.style.height = maxHeight + bottomSpace + 'px';
   }
 
   function scrollUp(y) {
-    scrollParent.scrollTo(
-      0,
-      (scrollParent == window
-        ? document.documentElement.scrollTop || document.body.scrollTop
-        : scrollParent.scrollTop) - y
-    );
+    scrollParent.scrollTo(0, (scrollParent == window ? document.documentElement.scrollTop || document.body.scrollTop : scrollParent.scrollTop) - y);
   }
   function scrollDown(y) {
-    scrollParent.scrollTo(
-      0,
-      (scrollParent == window
-        ? document.documentElement.scrollTop || document.body.scrollTop
-        : scrollParent.scrollTop) + y
-    );
+    scrollParent.scrollTo(0, (scrollParent == window ? document.documentElement.scrollTop || document.body.scrollTop : scrollParent.scrollTop) + y);
   }
 
   var debounceResize = debounce(() => {
     this.update();
-    lastScrollY =
-      scrollParent == window
-        ? document.documentElement.scrollTop || document.body.scrollTop
-        : scrollParent.scrollTop;
+    lastScrollY = scrollParent == window ? document.documentElement.scrollTop || document.body.scrollTop : scrollParent.scrollTop;
   }, 100);
 
-  window.addEventListener("resize", () => {
+  window.addEventListener('resize', () => {
     debounceResize();
   });
 
   var lastScrollY = 0;
   var debounceScorll = debounce(() => {
-    var scrollParentHeight =
-      scrollParent.innerHeight || scrollParent.clientHeight;
-    var scrollY =
-      scrollParent == window
-        ? document.documentElement.scrollTop || document.body.scrollTop
-        : scrollParent.scrollTop;
-    var scrollContentHeight =
-      scrollParent == window
-        ? document.documentElement.scrollHeight || document.body.scrollHeight
-        : scrollParent.scrollHeight;
+    if (!container.parentElement) return;
+    var scrollParentHeight = scrollParent.innerHeight || scrollParent.clientHeight;
+    var scrollY = scrollParent == window ? document.documentElement.scrollTop || document.body.scrollTop : scrollParent.scrollTop;
+    var scrollContentHeight = scrollParent == window ? document.documentElement.scrollHeight || document.body.scrollHeight : scrollParent.scrollHeight;
     if (scrollY == 0 && lastScrollY > scrollY && topLoading == null) {
-      this.dispatchEvent(new C3Event("touchtop"));
+      this.dispatchEvent(new C3Event('touchtop'));
     }
-    if (
-      scrollY + scrollParentHeight + 1 >= scrollContentHeight &&
-      lastScrollY < scrollY &&
-      bottomLoading == null
-    ) {
-      this.dispatchEvent(new C3Event("touchbottom"));
+    /* console.log(scrollY, scrollParentHeight, scrollContentHeight, lastScrollY, scrollY, bottomLoading);
+    console.log(scrollY + scrollParentHeight + 1 >= scrollContentHeight && lastScrollY <= scrollY && bottomLoading == null); */
+    if (scrollY + scrollParentHeight + 1 >= scrollContentHeight && lastScrollY <= scrollY && bottomLoading == null) {
+      this.dispatchEvent(new C3Event('touchbottom'));
     }
     lastScrollY = scrollY;
-  }, 100);
+  }, 10);
 
-  scrollParent.addEventListener("scroll", () => {
-    debounceScorll();
-  });
+  scrollParent.addEventListener('scroll', debounceScorll);
   this.update();
   return this;
 }
+
 (function() {
   var Super = function() {};
   Super.prototype = C3EventDispatcher.prototype;
