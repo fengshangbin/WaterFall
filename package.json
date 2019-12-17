@@ -1,15 +1,19 @@
 {
   "name": "WaterFall",
   "version": "1.0.0",
-  "description": "",
+  "description": "H5 water fall list Component",
   "main": "dist/waterfall.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open --mode development",
     "build": "webpack --mode production"
   },
-  "keywords": [],
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fengshangbin/WaterFall"
+  },
+  "keywords": ["water fall"],
+  "author": "fengshangbin",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.6.0",
