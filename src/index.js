@@ -131,7 +131,7 @@ export function builder(container, options) {
       item.style.top = top + 'px';
       arr[0].top += item.offsetHeight + vGap;
       if (arr[0].top >= arr[columns - 1].top) {
-        maxHeight = arr[0].top;
+        maxHeight = arr[0].top - vGap;
       }
     }
     setContainerHeight();
