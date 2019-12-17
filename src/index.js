@@ -19,9 +19,19 @@ var _config = {
 3, {width:"300px", minGap:"10px"} 
 */
 export function builder(container, options) {
-  C3EventDispatcher.call(this);
+  var INSTANCE = this;
+  C3EventDispatcher.call(INSTANCE);
   var config = extend(_config, options);
   var scrollParent = config.scrollParent;
+  INSTANCE.updateOptions = function(){
+    config = extend(_config, options);
+    if(scrollParent != config.scrollParent){
+      scrollParent.removeEventListener('scroll', debounceScorll);
+      scrollParent = config.scrollParent;
+      scrollParent.addEventListener('scroll', debounceScorll);
+    }
+    INSTANCE.update();
+  }
   if (container != document.body) {
     container.classList.add('water-fall-container');
   }
@@ -46,7 +56,7 @@ export function builder(container, options) {
     return parseFloat(value) == NaN ? 0 : parseFloat(value);
   }
 
-  this.measure = function() {
+  INSTANCE.measure = function() {
     var contaierWidth = container.innerWidth || container.clientWidth;
     var rootFontSize = getComputedStyle(document.documentElement)['font-size'].replace(/px$/i, '');
     var contaierFontSize = getComputedStyle(container)['font-size'].replace(/px$/i, '');
@@ -83,8 +93,8 @@ export function builder(container, options) {
     };
   };
 
-  this.update = function() {
-    var measureResult = this.measure();
+  INSTANCE.update = function() {
+    var measureResult = INSTANCE.measure();
     var contaierWidth = measureResult.contaierWidth;
     var columns = measureResult.columns;
     var itemWidth = measureResult.itemWidth;
@@ -128,7 +138,9 @@ export function builder(container, options) {
 
     var afterWidth = container.innerWidth || container.clientWidth;
     if (afterWidth != contaierWidth) {
-      this.update();
+      window.setTimeout(INSTANCE.update, 20);
+    }else{
+      window.setTimeout(debounceScorll, 20);
     }
   };
 
@@ -136,13 +148,13 @@ export function builder(container, options) {
   var topSpace = 0,
     bottomSpace = 0,
     maxHeight = 0;
-  this.showLoading = function(toucheTop) {
-    //this.hideLoading();
+  INSTANCE.showLoading = function(toucheTop) {
+    //INSTANCE.hideLoading();
     if (toucheTop) {
       container.insertAdjacentHTML('afterbegin', config.loading);
       topLoading = container.firstChild || container.firstElementChild;
       topSpace = topLoading.offsetHeight;
-      this.update();
+      INSTANCE.update();
       scrollUp(topSpace);
     } else {
       container.insertAdjacentHTML('beforeend', config.loading);
@@ -153,12 +165,12 @@ export function builder(container, options) {
       scrollDown(bottomSpace);
     }
   };
-  this.hideLoading = function() {
+  INSTANCE.hideLoading = function() {
     if (topLoading) {
       topLoading.remove();
       topLoading = null;
       topSpace = 0;
-      this.update();
+      INSTANCE.update();
     }
     if (bottomLoading) {
       bottomLoading.remove();
@@ -180,13 +192,11 @@ export function builder(container, options) {
   }
 
   var debounceResize = debounce(() => {
-    this.update();
+    INSTANCE.update();
     lastScrollY = scrollParent == window ? document.documentElement.scrollTop || document.body.scrollTop : scrollParent.scrollTop;
   }, 100);
 
-  window.addEventListener('resize', () => {
-    debounceResize();
-  });
+  window.addEventListener('resize', debounceResize);
 
   var lastScrollY = 0;
   var debounceScorll = debounce(() => {
@@ -195,22 +205,26 @@ export function builder(container, options) {
     var scrollY = scrollParent == window ? document.documentElement.scrollTop || document.body.scrollTop : scrollParent.scrollTop;
     var scrollContentHeight = scrollParent == window ? document.documentElement.scrollHeight || document.body.scrollHeight : scrollParent.scrollHeight;
     if (scrollY == 0 && lastScrollY > scrollY && topLoading == null) {
-      this.dispatchEvent(new C3Event('touchtop'));
+      INSTANCE.dispatchEvent(new C3Event('touchtop'));
     }
-    /* console.log(scrollY, scrollParentHeight, scrollContentHeight, lastScrollY, scrollY, bottomLoading);
-    console.log(scrollY + scrollParentHeight + 1 >= scrollContentHeight && lastScrollY <= scrollY && bottomLoading == null); */
+    //console.log(scrollY, scrollParentHeight, scrollContentHeight, lastScrollY, scrollY, bottomLoading);
+    //console.log(scrollY + scrollParentHeight + 1 >= scrollContentHeight && lastScrollY <= scrollY && bottomLoading == null);
     if (scrollY + scrollParentHeight + 1 >= scrollContentHeight && lastScrollY <= scrollY && bottomLoading == null) {
-      this.dispatchEvent(new C3Event('touchbottom'));
+      INSTANCE.dispatchEvent(new C3Event('touchbottom'));
     }
     lastScrollY = scrollY;
   }, 10);
 
   scrollParent.addEventListener('scroll', debounceScorll);
-  this.fireScroll = function() {
+  /* INSTANCE.fireScroll = function() {
     debounceScorll();
-  };
-  this.update();
-  return this;
+  }; */
+  INSTANCE.destroy = function(){
+    window.removeEventListener('resize', debounceResize);
+    scrollParent.removeEventListener('scroll', debounceScorll);
+  }
+  INSTANCE.update();
+  return INSTANCE;
 }
 
 (function() {
