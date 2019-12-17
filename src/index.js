@@ -23,7 +23,7 @@ export function builder(container, options) {
   C3EventDispatcher.call(INSTANCE);
   var config = extend(_config, options);
   var scrollParent = config.scrollParent;
-  INSTANCE.updateOptions = function(){
+  INSTANCE.updateOptions = function(options){
     config = extend(_config, options);
     if(scrollParent != config.scrollParent){
       scrollParent.removeEventListener('scroll', debounceScorll);
