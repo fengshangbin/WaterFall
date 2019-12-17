@@ -26,9 +26,11 @@ export function builder(container, options) {
   INSTANCE.updateOptions = function(options){
     config = extend(_config, options);
     if(scrollParent != config.scrollParent){
-      scrollParent.removeEventListener('scroll', debounceScorll);
+      if(scrollParent!=null)
+        scrollParent.removeEventListener('scroll', debounceScorll);
       scrollParent = config.scrollParent;
-      scrollParent.addEventListener('scroll', debounceScorll);
+      if(scrollParent!=null)
+        scrollParent.addEventListener('scroll', debounceScorll);
     }
     INSTANCE.update();
   }
@@ -185,9 +187,11 @@ export function builder(container, options) {
   }
 
   function scrollUp(y) {
+    if (scrollParent==null) return;
     scrollParent.scrollTo(0, (scrollParent == window ? document.documentElement.scrollTop || document.body.scrollTop : scrollParent.scrollTop) - y);
   }
   function scrollDown(y) {
+    if (scrollParent==null) return;
     scrollParent.scrollTo(0, (scrollParent == window ? document.documentElement.scrollTop || document.body.scrollTop : scrollParent.scrollTop) + y);
   }
 
@@ -200,7 +204,7 @@ export function builder(container, options) {
 
   var lastScrollY = 0;
   var debounceScorll = debounce(() => {
-    if (!container.parentElement) return;
+    if (!container.parentElement || scrollParent==null) return;
     var scrollParentHeight = scrollParent.innerHeight || scrollParent.clientHeight;
     var scrollY = scrollParent == window ? document.documentElement.scrollTop || document.body.scrollTop : scrollParent.scrollTop;
     var scrollContentHeight = scrollParent == window ? document.documentElement.scrollHeight || document.body.scrollHeight : scrollParent.scrollHeight;
@@ -215,13 +219,13 @@ export function builder(container, options) {
     lastScrollY = scrollY;
   }, 10);
 
-  scrollParent.addEventListener('scroll', debounceScorll);
+  if(scrollParent)scrollParent.addEventListener('scroll', debounceScorll);
   /* INSTANCE.fireScroll = function() {
     debounceScorll();
   }; */
   INSTANCE.destroy = function(){
     window.removeEventListener('resize', debounceResize);
-    scrollParent.removeEventListener('scroll', debounceScorll);
+    if(scrollParent)scrollParent.removeEventListener('scroll', debounceScorll);
   }
   INSTANCE.update();
   return INSTANCE;
