@@ -7,7 +7,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new webpack.BannerPlugin(
-      " waterfall.js \n by fengshangbin 2019-09-04 \n https://github.com/fengshangbin/WaterFall \n H5 water fall list Component"
+      " waterfall.js \n by fengshangbin 2019-09-04 \n https://github.com/fengshangbin/WaterFall \n H5 easy water fall list Component"
     )
   ],
   devServer: {

@@ -1,7 +1,7 @@
 {
-  "name": "WaterFall",
+  "name": "easy-waterfall",
   "version": "1.0.0",
-  "description": "H5 water fall list Component",
+  "description": "H5 easy water fall list Component",
   "main": "dist/waterfall.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -12,7 +12,7 @@
     "type": "git",
     "url": "https://github.com/fengshangbin/WaterFall"
   },
-  "keywords": ["water fall"],
+  "keywords": ["easy water fall"],
   "author": "fengshangbin",
   "license": "MIT",
   "devDependencies": {
