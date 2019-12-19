@@ -23,12 +23,19 @@ export function builder(container, options) {
   C3EventDispatcher.call(INSTANCE);
   var config = extend(_config, options);
   var scrollParent = config.scrollParent;
+  if(typeof scrollParent == "string"){
+    scrollParent = document.querySelector(scrollParent);
+  }
   INSTANCE.updateOptions = function(options){
     config = extend(_config, options);
-    if(scrollParent != config.scrollParent){
+    var newScrollParent = config.scrollParent;
+    if(typeof newScrollParent == "string"){
+      newScrollParent = document.querySelector(newScrollParent);
+    }
+    if(scrollParent != newScrollParent){
       if(scrollParent!=null)
         scrollParent.removeEventListener('scroll', debounceScorll);
-      scrollParent = config.scrollParent;
+      scrollParent = newScrollParent;
       if(scrollParent!=null)
         scrollParent.addEventListener('scroll', debounceScorll);
     }
@@ -211,7 +218,7 @@ export function builder(container, options) {
     if (scrollY == 0 && lastScrollY > scrollY && topLoading == null) {
       INSTANCE.dispatchEvent(new C3Event('touchtop'));
     }
-    //console.log(scrollY, scrollParentHeight, scrollContentHeight, lastScrollY, scrollY, bottomLoading);
+    //console.log(scrollParent, scrollY, scrollParentHeight, scrollContentHeight, lastScrollY, scrollY, bottomLoading);
     //console.log(scrollY + scrollParentHeight + 1 >= scrollContentHeight && lastScrollY <= scrollY && bottomLoading == null);
     if (scrollY + scrollParentHeight + 1 >= scrollContentHeight && lastScrollY <= scrollY && bottomLoading == null) {
       INSTANCE.dispatchEvent(new C3Event('touchbottom'));

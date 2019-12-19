@@ -1,5 +1,7 @@
 
-import { builder } from './utils';
+import {builder as waterfall} from 'easy-waterfall/src/index';
+
+//console.log(waterfall);
 
 const waterFallComponent = {
   name: "waterfall",
@@ -31,7 +33,9 @@ const waterFallComponent = {
   },
 
   mounted() {
-    this.waterFall = WaterFall.builder(this.$el, this.options);
+    //console.log(this.$el, this.options);
+    this.waterFall = new waterfall(this.$el, this.options);
+    //console.log(this.waterFall);
     this.waterFall.addEventListener("touchtop", this.touchtop);
     this.waterFall.addEventListener("touchbottom", this.touchbottom);
   },
@@ -41,6 +45,7 @@ const waterFallComponent = {
       this.waterFall.destroy();
       this.waterFall.removeEventListener("touchtop", this.touchtop);
       this.waterFall.removeEventListener("touchbottom", this.touchbottom);
+      this.waterFall = null;
     }
   },
 
@@ -51,7 +56,10 @@ const waterFallComponent = {
   watch: {
     options: {
       handler(newOptionValue) {
-        this.updateOptions(newOptionValue);
+        if (this.waterFall !== undefined){
+          //console.log(newOptionValue);
+          this.waterFall.updateOptions(newOptionValue);
+        }
       },
       deep: true
     }
@@ -62,10 +70,17 @@ const waterFallComponent = {
       this.$emit("touchtop");
     },
     touchbottom() {
+      //console.log("touchbottom");
       this.$emit("touchbottom");
     },
     update(){
       if (this.waterFall !== undefined) this.waterFall.update();
+    },
+    showLoading(){
+      if (this.waterFall !== undefined) this.waterFall.showLoading();
+    },
+    hideLoading(){
+      if (this.waterFall !== undefined) this.waterFall.hideLoading();
     }
   }
 };
