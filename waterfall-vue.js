@@ -1,5 +1,5 @@
 
-import {builder as waterfall} from 'easy-waterfall/src/index';
+import {builder as waterfall} from 'easy-waterfall';
 
 //console.log(waterfall);
 
