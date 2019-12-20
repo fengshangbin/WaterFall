@@ -13,7 +13,7 @@ GitHub Pages: [https://github.com/fengshangbin/WaterFall](https://github.com/fen
 多种排版模式，支持各种实际排版需求  
 兼容 px em rem %多种宽度单位  
 支持下拉到底时追加下一页视图  
-使用简单
+使用简单且已内置vue集成
 
 ### 在线测试
 
@@ -25,18 +25,22 @@ GitHub Pages: [https://github.com/fengshangbin/WaterFall](https://github.com/fen
 
 ```
 <script src="waterfall.js"></script>
-```
 
-### 2, 构建 waterfall 实例
-
-```
 var waterFall = WaterFall.builder(container, options);
 ```
+或
+```
+npm i easy-waterfall -S
 
+import {builder as waterfall} from 'easy-waterfall';
+
+var waterFall = new waterfall(container, options);
+
+```
 container 瀑布流容器  
 options 配置参数  
-完整默认值如下
 
+options完整默认值
 ```
 {
   minWidth: null,
@@ -49,6 +53,39 @@ options 配置参数
   loading:
     '<div class="water-fall-loading"><svg viewBox="0 0 50 50" class="loading"><defs><linearGradient id="linear" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#000" stop-opacity="1.0" /><stop offset="90%" stop-color="#000" stop-opacity="0" /></linearGradient></defs><circle cx="25" cy="25" r="20" stroke-width="5" stroke="url(#linear)" fill="none" /></svg><div>'
 };
+```
+scrollParent如果是指定div，应该设置成元素选择的字符串如".communitys-all"
+
+### 2, 在vue中使用
+
+```
+<template>
+  <waterfall class="total-report" :options="{minWidth:'200px', gap:'15px'}">
+    <div class="grid-content bg-purple"></div>
+    <div class="grid-content bg-purple"></div>
+    <div class="grid-content bg-purple"></div>
+    <div class="grid-content bg-purple"></div>
+    <div class="grid-content bg-purple"></div>
+  </waterfall>
+</template>
+
+<script>
+import waterfall from 'easy-waterfall/waterfall-vue';
+export default {
+  components: {
+    waterfall
+  }
+};
+</script>
+
+<style lang="less" scoped>
+  .bg-purple {
+    background: #d3dce6;
+  }
+  .grid-content {
+    min-height: 150px;
+  }
+</style>
 ```
 
 ### 3, 三种排版模式
