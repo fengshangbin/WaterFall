@@ -75,6 +75,7 @@ scrollParent 如果是指定 div，应该设置成元素选择的字符串如".c
 </template>
 
 <script>
+
 import waterfall from "easy-waterfall/dist/waterfallVue";
 export default {
   components: {
