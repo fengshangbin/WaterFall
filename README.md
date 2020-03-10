@@ -13,7 +13,7 @@ GitHub Pages: [https://github.com/fengshangbin/WaterFall](https://github.com/fen
 多种排版模式，支持各种实际排版需求  
 兼容 px em rem %多种宽度单位  
 支持下拉到底时追加下一页视图  
-使用简单且已内置vue集成
+使用简单且已内置 vue 集成
 
 ### 在线测试
 
@@ -28,7 +28,9 @@ GitHub Pages: [https://github.com/fengshangbin/WaterFall](https://github.com/fen
 
 var waterFall = WaterFall.builder(container, options);
 ```
+
 或
+
 ```
 npm i easy-waterfall -S
 
@@ -37,10 +39,12 @@ import {builder as waterfall} from 'easy-waterfall';
 var waterFall = new waterfall(container, options);
 
 ```
-container 瀑布流容器  
-options 配置参数  
 
-options完整默认值
+container 瀑布流容器  
+options 配置参数
+
+options 完整默认值
+
 ```
 {
   minWidth: null,
@@ -54,9 +58,10 @@ options完整默认值
     '<div class="water-fall-loading"><svg viewBox="0 0 50 50" class="loading"><defs><linearGradient id="linear" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#000" stop-opacity="1.0" /><stop offset="90%" stop-color="#000" stop-opacity="0" /></linearGradient></defs><circle cx="25" cy="25" r="20" stroke-width="5" stroke="url(#linear)" fill="none" /></svg><div>'
 };
 ```
-scrollParent如果是指定div，应该设置成元素选择的字符串如".communitys-all"
 
-### 2, 在vue中使用
+scrollParent 如果是指定 div，应该设置成元素选择的字符串如".communitys-all"
+
+### 2, 在 vue 中使用
 
 ```
 <template>
@@ -70,7 +75,7 @@ scrollParent如果是指定div，应该设置成元素选择的字符串如".com
 </template>
 
 <script>
-import waterfall from 'easy-waterfall/waterfall-vue';
+import waterfall from "easy-waterfall/dist/waterfallVue";
 export default {
   components: {
     waterfall

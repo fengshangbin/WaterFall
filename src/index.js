@@ -23,24 +23,22 @@ export function builder(container, options) {
   C3EventDispatcher.call(INSTANCE);
   var config = extend(_config, options);
   var scrollParent = config.scrollParent;
-  if(typeof scrollParent == "string"){
+  if (typeof scrollParent == 'string') {
     scrollParent = document.querySelector(scrollParent);
   }
-  INSTANCE.updateOptions = function(options){
+  INSTANCE.updateOptions = function(options) {
     config = extend(_config, options);
     var newScrollParent = config.scrollParent;
-    if(typeof newScrollParent == "string"){
+    if (typeof newScrollParent == 'string') {
       newScrollParent = document.querySelector(newScrollParent);
     }
-    if(scrollParent != newScrollParent){
-      if(scrollParent!=null)
-        scrollParent.removeEventListener('scroll', debounceScorll);
+    if (scrollParent != newScrollParent) {
+      if (scrollParent != null) scrollParent.removeEventListener('scroll', debounceScorll);
       scrollParent = newScrollParent;
-      if(scrollParent!=null)
-        scrollParent.addEventListener('scroll', debounceScorll);
+      if (scrollParent != null) scrollParent.addEventListener('scroll', debounceScorll);
     }
     INSTANCE.update();
-  }
+  };
   if (container != document.body) {
     container.classList.add('water-fall-container');
   }
@@ -148,7 +146,7 @@ export function builder(container, options) {
     var afterWidth = container.innerWidth || container.clientWidth;
     if (afterWidth != contaierWidth) {
       window.setTimeout(INSTANCE.update, 20);
-    }else{
+    } else {
       window.setTimeout(debounceScorll, 20);
     }
   };
@@ -194,11 +192,11 @@ export function builder(container, options) {
   }
 
   function scrollUp(y) {
-    if (scrollParent==null) return;
+    if (scrollParent == null) return;
     scrollParent.scrollTo(0, (scrollParent == window ? document.documentElement.scrollTop || document.body.scrollTop : scrollParent.scrollTop) - y);
   }
   function scrollDown(y) {
-    if (scrollParent==null) return;
+    if (scrollParent == null) return;
     scrollParent.scrollTo(0, (scrollParent == window ? document.documentElement.scrollTop || document.body.scrollTop : scrollParent.scrollTop) + y);
   }
 
@@ -211,7 +209,7 @@ export function builder(container, options) {
 
   var lastScrollY = 0;
   var debounceScorll = debounce(() => {
-    if (!container.parentElement || scrollParent==null) return;
+    if (!container.parentElement || scrollParent == null) return;
     var scrollParentHeight = scrollParent.innerHeight || scrollParent.clientHeight;
     var scrollY = scrollParent == window ? document.documentElement.scrollTop || document.body.scrollTop : scrollParent.scrollTop;
     var scrollContentHeight = scrollParent == window ? document.documentElement.scrollHeight || document.body.scrollHeight : scrollParent.scrollHeight;
@@ -226,14 +224,14 @@ export function builder(container, options) {
     lastScrollY = scrollY;
   }, 10);
 
-  if(scrollParent)scrollParent.addEventListener('scroll', debounceScorll);
+  if (scrollParent) scrollParent.addEventListener('scroll', debounceScorll);
   /* INSTANCE.fireScroll = function() {
     debounceScorll();
   }; */
-  INSTANCE.destroy = function(){
+  INSTANCE.destroy = function() {
     window.removeEventListener('resize', debounceResize);
-    if(scrollParent)scrollParent.removeEventListener('scroll', debounceScorll);
-  }
+    if (scrollParent) scrollParent.removeEventListener('scroll', debounceScorll);
+  };
   INSTANCE.update();
   return INSTANCE;
 }
