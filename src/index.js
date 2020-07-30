@@ -7,6 +7,7 @@ var _config = {
   width: null,
   gap: null,
   minGap: null,
+  fullOneLine: false,
   itemSelector: null,
   scrollParent: window,
   loading: '<div class="water-fall-loading"><svg viewBox="0 0 50 50" class="loading"><defs><linearGradient id="linear" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#000" stop-opacity="1.0" /><stop offset="90%" stop-color="#000" stop-opacity="0" /></linearGradient></defs><circle cx="25" cy="25" r="20" stroke-width="5" stroke="url(#linear)" fill="none" /></svg><div>'
@@ -80,7 +81,7 @@ export function builder(container, options) {
       gap = getLocalPixel(config.gap);
       vGap = gap;
       columns = Math.floor((contaierWidth + gap) / (getLocalPixel(config.minWidth) + gap));
-      if (columns > itemCount) columns = itemCount;
+      if (config.fullOneLine && columns > itemCount) columns = itemCount;
       itemWidth = (contaierWidth - gap * (columns - 1)) / columns;
     } else if (config.width != null) {
       itemWidth = getLocalPixel(config.width);
