@@ -26,7 +26,7 @@ export function builder(container, options) {
   if (typeof scrollParent == 'string') {
     scrollParent = document.querySelector(scrollParent);
   }
-  INSTANCE.updateOptions = function(options) {
+  INSTANCE.updateOptions = function (options) {
     config = extend(_config, options);
     var newScrollParent = config.scrollParent;
     if (typeof newScrollParent == 'string') {
@@ -63,7 +63,7 @@ export function builder(container, options) {
     return parseFloat(value) == NaN ? 0 : parseFloat(value);
   }
 
-  INSTANCE.measure = function() {
+  INSTANCE.measure = function (itemCount) {
     var contaierWidth = container.innerWidth || container.clientWidth;
     var rootFontSize = getComputedStyle(document.documentElement)['font-size'].replace(/px$/i, '');
     var contaierFontSize = getComputedStyle(container)['font-size'].replace(/px$/i, '');
@@ -80,6 +80,7 @@ export function builder(container, options) {
       gap = getLocalPixel(config.gap);
       vGap = gap;
       columns = Math.floor((contaierWidth + gap) / (getLocalPixel(config.minWidth) + gap));
+      if (columns > itemCount) columns = itemCount;
       itemWidth = (contaierWidth - gap * (columns - 1)) / columns;
     } else if (config.width != null) {
       itemWidth = getLocalPixel(config.width);
@@ -100,14 +101,14 @@ export function builder(container, options) {
     };
   };
 
-  INSTANCE.update = function() {
-    var measureResult = INSTANCE.measure();
+  INSTANCE.update = function () {
+    var childrens = config.itemSelector ? container.querySelectorAll(config.itemSelector) : container.children;
+    var measureResult = INSTANCE.measure(childrens.length);
     var contaierWidth = measureResult.contaierWidth;
     var columns = measureResult.columns;
     var itemWidth = measureResult.itemWidth;
     var gap = measureResult.gap;
     var vGap = measureResult.vGap;
-    var childrens = config.itemSelector ? container.querySelectorAll(config.itemSelector) : container.children;
 
     var arr = [];
     if (columns == 0) return;
@@ -121,7 +122,7 @@ export function builder(container, options) {
     for (var i = 0; i < childrens.length; i++) {
       var item = childrens[i];
       if (item == topLoading || item == bottomLoading) continue;
-      arr.sort(function(a, b) {
+      arr.sort(function (a, b) {
         if (a.top > b.top) return 1;
         else if (a.top < b.top) return -1;
         else {
@@ -155,7 +156,7 @@ export function builder(container, options) {
   var topSpace = 0,
     bottomSpace = 0,
     maxHeight = 0;
-  INSTANCE.showLoading = function(toucheTop) {
+  INSTANCE.showLoading = function (toucheTop) {
     //INSTANCE.hideLoading();
     if (toucheTop) {
       container.insertAdjacentHTML('afterbegin', config.loading);
@@ -172,7 +173,7 @@ export function builder(container, options) {
       scrollDown(bottomSpace);
     }
   };
-  INSTANCE.hideLoading = function() {
+  INSTANCE.hideLoading = function () {
     if (topLoading) {
       topLoading.remove();
       topLoading = null;
@@ -228,7 +229,7 @@ export function builder(container, options) {
   /* INSTANCE.fireScroll = function() {
     debounceScorll();
   }; */
-  INSTANCE.destroy = function() {
+  INSTANCE.destroy = function () {
     window.removeEventListener('resize', debounceResize);
     if (scrollParent) scrollParent.removeEventListener('scroll', debounceScorll);
   };
@@ -236,8 +237,8 @@ export function builder(container, options) {
   return INSTANCE;
 }
 
-(function() {
-  var Super = function() {};
+(function () {
+  var Super = function () { };
   Super.prototype = C3EventDispatcher.prototype;
   builder.prototype = new Super();
 })();
