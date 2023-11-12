@@ -1,6 +1,6 @@
 {
   "name": "easy-waterfall-2",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "H5 easy water fall list Component",
   "main": "dist/waterfall.js",
   "scripts": {
