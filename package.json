@@ -1,6 +1,6 @@
 {
-  "name": "easy-waterfall",
-  "version": "1.0.11",
+  "name": "easy-waterfall-2",
+  "version": "1.0.1",
   "description": "H5 easy water fall list Component",
   "main": "dist/waterfall.js",
   "scripts": {
@@ -10,13 +10,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/fengshangbin/WaterFall"
+    "url": "https://github.com/rainCychen/WaterFall"
   },
-  "homepage": "https://www.fengshangbin.com",
+  "homepage": "",
   "keywords": [
     "easy water fall"
   ],
-  "author": "fengshangbin",
+  "author": "fengshangbin,rainCychen",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.6.0",

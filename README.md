@@ -1,7 +1,8 @@
 # WaterFall
 
 masonry layout JS Component 瀑布流排版
-GitHub Pages: [https://github.com/fengshangbin/WaterFall](https://github.com/fengshangbin/WaterFall)
+GitHub Pages: [https://github.com/rainCychen/WaterFall](https://github.com/rainCychen/WaterFall)
+fork自[https://github.com/fengshangbin/WaterFall](https://github.com/fengshangbin/WaterFall)
 
 # 设计理念
 
@@ -14,10 +15,6 @@ GitHub Pages: [https://github.com/fengshangbin/WaterFall](https://github.com/fen
 兼容 px em rem %多种宽度单位  
 支持下拉到底时追加下一页视图  
 使用简单且已内置 vue 集成
-
-### 在线测试
-
-[https://www.fengshangbin.com/html/waterfall/](https://www.fengshangbin.com/html/waterfall/)
 
 # 如何使用
 
@@ -32,9 +29,9 @@ var waterFall = WaterFall.builder(container, options);
 或
 
 ```
-npm i easy-waterfall -S
+npm i easy-waterfall-2 -S
 
-import {builder as waterfall} from 'easy-waterfall';
+import {builder as waterfall} from 'easy-waterfall-2';
 
 var waterFall = new waterfall(container, options);
 
@@ -112,6 +109,12 @@ export default {
 
 ```
 {width:"300px", minGap:"10px"}
+```
+
+4, 指定子项固定宽度，和固定间距 优先于 3 模式
+
+```
+{width:"300px", gap:"10px"} 
 ```
 
 ### 4， 兼容 px em rem %多种宽度单位

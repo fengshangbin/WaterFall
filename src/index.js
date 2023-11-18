@@ -17,7 +17,8 @@ var _config = {
 三种配置模式
 1, {minWidth:"300px", gap:"10px"}
 2, {columns:3, gap:"10px"}
-3, {width:"300px", minGap:"10px"} 
+3, {width:"300px", minGap:"10px"}
+4, {width:"300px", gap:"10px"} 
 */
 export function builder(container, options) {
   var INSTANCE = this;
@@ -83,6 +84,11 @@ export function builder(container, options) {
       columns = Math.floor((contaierWidth + gap) / (getLocalPixel(config.minWidth) + gap));
       if (config.fullOneLine && columns > itemCount) columns = itemCount;
       itemWidth = (contaierWidth - gap * (columns - 1)) / columns;
+    } else if (config.width != null && config.gap !== null) {
+      itemWidth = getLocalPixel(config.width);
+      gap = getLocalPixel(config.gap);
+      vGap = gap;
+      columns = Math.floor((contaierWidth + gap) / (itemWidth + gap))
     } else if (config.width != null) {
       itemWidth = getLocalPixel(config.width);
       var minGap = getLocalPixel(config.minGap);
